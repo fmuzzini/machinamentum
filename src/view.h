@@ -4,7 +4,6 @@ Interfaccia del modulo view
 */
 
 #include <allegro5/allegro.h>
-#include "struttura_dati.h"
 
 /**
 Mostra sul display gli elementi.
@@ -13,4 +12,4 @@ Disegna gli elementi nella loro posizione
 @param[in] n Numero degli elementi
 @param[in] display Display sul quale disegnare
 */
-void mostra_schermata(elementi elem, int n, ALLEGRO_DISPLAY* display)
+void mostra_schermata(elementi elem, int n, ALLEGRO_DISPLAY* display);

@@ -2,7 +2,7 @@
 @file
 Modulo per l'accesso e il salvataggio dei dati durante l'esecuzione del programma
 */
-#include <allegro5/allegro>
+#include <allegro5/allegro.h>
 #include "struttura_dati.h"
 #include "file_IO.h"
 #include "accesso_dati.h"
@@ -15,7 +15,7 @@ questa struttura è utilizzata solo da questo modulo
 struct fotogramma{
 	ALLEGRO_BITMAP* bitmap;
 	fotogramma* prossimo;
-}
+};
 
 
 static fotogramma* replay = NULL; 		/**< Puntatore alla testa della lista dei fotogrammi. */
@@ -55,15 +55,21 @@ void buffer_replay(ALLEGRO_BITMAP* bitmap){
 		
 }
 
-
+/*
+Funzione da rivedere poichè il tipo ALLEGRO_BITMAP non contiene direttamente il bitmap ma ha dei puntatori a memoria dinamica.
+Possibili soluzioni:
+Utilizzare funzioni di libreria per il salvataggio su file, reindirizzando il salvataggio in un array per poi creare un unico file.
+Creare un tipo apposito per la memorizzazione effettiva del bitmap, studiando a fondo il tipo ALLEGRO_BITMAP.
+Ricordarsi di modificare anche la funzione replay_to_file()
+*/
 bool salva_replay(){
 	//creo array di bitmap
-	ALLEGRO_BITMAP array_replay = new ALLEGRO_BITMAP[numero_fotogrammi];
+	ALLEGRO_BITMAP* array_replay = new ALLEGRO_BITMAP[numero_fotogrammi];
 	
 	//Salvo nell'array i bitmap dei fotogrammi
 	fotogramma* p = replay;
 	for (int i = 0; i < numero_fotogrammi; i++){
-		array_replay[i] = (fotogramma->bitmap)*;
+		array_replay[i] = (p->bitmap)*;
 		p = p->prossimo;
 	}
 
