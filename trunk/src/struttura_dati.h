@@ -16,7 +16,7 @@ struct elemento {
 	float altezza;
 	float larghezza;
 	ALLEGRO_BITMAP* bitmap;
-	}
+	};
 
 /**
 Array di elemento.
