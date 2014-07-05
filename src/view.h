@@ -12,4 +12,4 @@ Disegna gli elementi nella loro posizione
 @param[in] n Numero degli elementi
 @param[in] display Display sul quale disegnare
 */
-void mostra_schermata(elementi elem, int n, ALLEGRO_DISPLAY* display);
+void mostra_schermata(elementi elem, int n, const ALLEGRO_DISPLAY* display);

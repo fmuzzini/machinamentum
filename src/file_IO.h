@@ -6,8 +6,9 @@ Interfaccia del modulo file_IO
 #include <allegro5/allegro.h>
 
 /**
-Salva su file l'array di bitmap.
-@param[in] replay Array di bitmap
-@parma[in] n numero di elementi
+Salva su file una sequenza di n byte.
+@param[in] cont Puntatore all'inizio della sequenza
+@param[in] n numero di byte da scrivere
+@param[in] file nome da dare al file
 */
-bool replay_to_file(ALLEGRO_BITMAP replay[], int n);
+bool salva_su_file(const void* cont, int n, const char file[]);

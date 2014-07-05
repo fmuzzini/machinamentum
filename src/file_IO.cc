@@ -8,15 +8,13 @@ Modulo per il salvataggio/caricamento su/da file
 using namespace std;
 
 /*
-Problema con il tipo ALLEGRO_BITMAP.
-Vedi salva_replay() file: accesso_dati.cc
+Riguardare per apertura, accodamento e chiusura file
 */
-bool replay_to_file(ALLEGRO_BITMAP replay[], int n, char file[]){
-	ofstream f1(file);
+bool salva_su_file(void* cont, int n, const char file[]){
+	ofstream f1(file, ios_base::app);
 	if (!f1) return false;
 	
-	int numero_byte = n*sizeof(ALLEGRO_BITMAP);
-	f1.write(reinterpret_cast<char*>(replay), numero_byte);
+	f1.write( (char*) cont, n);
 	f1.close();
 
 	return true;
