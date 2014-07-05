@@ -17,6 +17,19 @@ struct fotogramma{
 	fotogramma* prossimo;
 };
 
+/**
+Struttura utilizzata per il salvataggio su file del replay.
+Contiene le caratteristiche dei bitmap del replay,
+questa struttura è utilizzata solo da questo modulo.
+*/
+struct replay_header_file{
+	int n_fotogrammi;			/**< Numero di fotogrammi del replay. */
+	int larghezza;				/**< Larghezza dei bitmap dei fotogrammi. */
+	int altezza;				/**< Altezza dei bitmap dei fotogrammi. */
+	int pixel_size;				/**< Lunghezza di ogni pixel in byte. */
+	int pixel_format;			/**< Tipo di pixel. */
+};
+
 
 static fotogramma* replay = NULL; 		/**< Puntatore alla testa della lista dei fotogrammi. */
 static fotogramma* ultimo = NULL;		/**< Puntatore all'ultimo fotogramma. */
@@ -25,7 +38,7 @@ static const int secondi = 5; 			/**< Durata replay. */
 static const int max_fotogrammi = secondi*FPS; 	/**< Massimo numero fotogrammi. */	
 
 
-void buffer_replay(ALLEGRO_BITMAP* bitmap){
+void buffer_replay(ALLEGRO_BITMAP* const bitmap){
 	//creo il nuovo fotogramma
 	fotogramma* f = new fotogramma;
 	f->bitmap = al_clone_bitmap(bitmap);
@@ -55,32 +68,44 @@ void buffer_replay(ALLEGRO_BITMAP* bitmap){
 		
 }
 
-/*
-Funzione da rivedere poichè il tipo ALLEGRO_BITMAP non contiene direttamente il bitmap ma ha dei puntatori a memoria dinamica.
-Possibili soluzioni:
-Utilizzare funzioni di libreria per il salvataggio su file, reindirizzando il salvataggio in un array per poi creare un unico file.
-Creare un tipo apposito per la memorizzazione effettiva del bitmap, studiando a fondo il tipo ALLEGRO_BITMAP.
-Ricordarsi di modificare anche la funzione replay_to_file()
+/**
+Crea dati grezzi dal bitmap.
+Salva in out il bitmap grezzo pixel per pixel, la memoria deve essere già stata allocata all'indirizzo di out in quantità sufficiente.
+@param[in] bitmap Bitmap sorgente
+@param[out] out Indirizzo dove verranno salvati i dati grezzi
+@param[in] n_pixel numero di pixel da copiare 
 */
-bool salva_replay(){
-	//creo array di bitmap
-	ALLEGRO_BITMAP* array_replay = new ALLEGRO_BITMAP[numero_fotogrammi];
+static void crea_bitmap_grezzo(ALLEGRO_BITMAP* const bitmap, void* out, int n_pixel){
+	int format = al_get_bitmap_format(bitmap);
+	ALLEGRO_LOCKED_REGION* loked = al_lock_bitmap(bitmap, format, ALLEGRO_LOCK_READONLY);
 	
-	//Salvo nell'array i bitmap dei fotogrammi
+	memcpy(out, bitmap, n_pixel);
+}
+
+
+bool salva_replay(const char file[]){
 	fotogramma* p = replay;
-	for (int i = 0; i < numero_fotogrammi; i++){
-		array_replay[i] = (p->bitmap)*;
+	
+	//Salvo le informazioni per l'header del file
+	replay_header_file header;
+	header.n_fotogrammi = numero_fotogrammi;
+	header.larghezza = al_get_bitmap_width(p->bitmap);
+	header.altezza = al_get_bitmap_height(p->bitmap);
+	header.pixel_format = al_get_bitmap_format(p->bitmap);
+	header.pixel_size = al_get_pixel_size(header.pixel_format);
+	
+	//Salvo header all'inizio del file
+	salva_su_file(&header, sizeof(header), file);
+
+	int bitmap_size = header.larghezza * header.altezza * header.pixel_size;
+	
+	//Alloco memoria per un bitmap, per ogni fotogramma ne creo i dati grezzi e li accodo al file
+	void* grezzo = malloc(bitmap_size);
+	while (p != NULL){
+		crea_bitmap_grezzo(p->bitmap, grezzo, bitmap_size);
+		salva_su_file(grezzo, bitmap_size, file);
 		p = p->prossimo;
 	}
-
-	//Salvo array su file
-	bool successo = replay_to_file(array_replay, numero_fotogrammi);
-	if (!successo) return false;
-
-	//Dealloco array
-	delete[] array_replay;
-	
-	return true;
 }
 
 
