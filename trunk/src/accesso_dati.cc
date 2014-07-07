@@ -77,9 +77,9 @@ Salva in out il bitmap grezzo pixel per pixel, la memoria deve essere già stata
 */
 static void crea_bitmap_grezzo(ALLEGRO_BITMAP* const bitmap, void* out, int n_pixel){
 	int format = al_get_bitmap_format(bitmap);
-	ALLEGRO_LOCKED_REGION* loked = al_lock_bitmap(bitmap, format, ALLEGRO_LOCK_READONLY);
+	ALLEGRO_LOCKED_REGION* locked = al_lock_bitmap(bitmap, format, ALLEGRO_LOCK_READONLY);
 	
-	memcpy(out, bitmap, n_pixel);
+	memcpy(out, locked, n_pixel);
 }
 
 
@@ -101,11 +101,16 @@ bool salva_replay(const char file[]){
 	
 	//Alloco memoria per un bitmap, per ogni fotogramma ne creo i dati grezzi e li accodo al file
 	void* grezzo = malloc(bitmap_size);
+	bool successo;
 	while (p != NULL){
 		crea_bitmap_grezzo(p->bitmap, grezzo, bitmap_size);
-		salva_su_file(grezzo, bitmap_size, file);
+		successo = salva_su_file(grezzo, bitmap_size, file);
+		if (!successo) break;
 		p = p->prossimo;
 	}
+	successo = chiudi_file() && successo ;
+	
+	return successo;
 }
 
 

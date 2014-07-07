@@ -9,7 +9,7 @@ Modulo che si occupa di assemblare e mostrare a video i vari elementi
 #include "view.h"
 
 
-void mostra_schermata(elementi elem, int n, const ALLEGRO_DISPLAY* display){
+void mostra_schermata(elementi elem, int n, ALLEGRO_DISPLAY* const display){
 	al_set_target_backbuffer(display); 		//Setto il backbuffer
 	al_clear_to_color(al_map_rgb(255,255,255)); 	//Pulisco il backbuffer
 	
