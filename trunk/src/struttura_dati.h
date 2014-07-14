@@ -3,6 +3,9 @@
 Strutture dati comuni all'intero programma
 */
 
+#ifndef STRUTTURA_DATI
+#define STRUTTURA_DATI
+
 #include <allegro5/allegro.h>
 
 /**
@@ -13,18 +16,20 @@ Viene utilizzata dal modulo view.cc per creare la schermata da mostrare
 struct elemento {
 	float posX;
 	float posY;
-	float altezza;
-	float larghezza;
 	ALLEGRO_BITMAP* bitmap;
 	};
 
+
 /**
 Array di elemento.
-La funzione ::main lo passa alla view.cc per creare la schermata da mostrare
+Il controller (stati.cc) lo passa alla view.cc per creare la schermata da mostrare
 */
 typedef elemento* elementi;
 
+struct bitmap_renderizzato{
+	ALLEGRO_BITMAP* bitmap;
+	int larghezza;
+	int altezza;
+};
 
-const int FPS = 60; /**< Frame per secondo.*/
-
-
+#endif
