@@ -6,6 +6,9 @@ Modulo per l'accesso e il salvataggio dei dati durante l'esecuzione del programm
 #include "struttura_dati.h"
 #include "file_IO.h"
 #include "accesso_dati.h"
+#include "debug.h"
+
+extern const int FPS;
 
 /**
 Struttura alla base della lista del replay.
